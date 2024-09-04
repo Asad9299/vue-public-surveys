@@ -3,7 +3,7 @@ import Dashboard from "../views/Dashboard.vue";
 import MainLayout from "../components/layouts/MainLayout.vue";
 import { authRoutes } from "./auth";
 import Surveys from "../views/Surveys.vue";
-import { userStore } from "../store";
+import { userStore } from "../store/user";
 
 const router = createRouter({
     history: createWebHistory(),
