@@ -34,9 +34,9 @@ const router = createRouter({
 
 router.beforeEach((to, from, next: any) => {
     const userStoreObj = userStore();
-    if(to.meta.requiresAuth && !userStoreObj.userData.authToken) {
+    if(to.meta.requiresAuth && !userStoreObj.authToken) {
         next({name: 'login'}); 
-    } else if (userStoreObj.userData.authToken && !to.meta.requiresAuth) {
+    } else if (userStoreObj.authToken && !to.meta.requiresAuth) {
         next({name: 'dashboard'});
     } else {
         next();
