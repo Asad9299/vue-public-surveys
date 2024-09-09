@@ -31,8 +31,17 @@ export const userStore = defineStore('user', () => {
         sessionStorage.setItem('user', JSON.stringify(userData));
     }
 
+    const removeUser = () => {
+      userData.name = '';
+      userData.email = '';
+      userData.authToken = '';
+      userData.isLoggedIn = false;
+
+      sessionStorage.removeItem('user');
+    }
+
     if (Object.keys(storedUser).length > 0) {
       setUser(storedUser);
     }    
-    return { userData, setUser }
+    return { userData, setUser, removeUser }
 })

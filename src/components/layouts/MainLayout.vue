@@ -185,7 +185,7 @@ const isRouteActive = (path: string): boolean => {
 };
 
 const logout = (): void => {
-  userStoreObj.authToken = "";
+  userStoreObj.removeUser();
   router.push("/login");
 };
 </script>
