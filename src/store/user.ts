@@ -11,8 +11,9 @@ export type user = {
 }
 
 export const userStore = defineStore('user', () => {
-    // const authToken = ref(''); 
-    // const isLoggedIn = ref(true);
+
+  let storedUser: any = sessionStorage.getItem('user');
+  storedUser     = storedUser ? JSON.parse(storedUser) : false;
 
     const userData: user = reactive({
         name: '',
@@ -26,10 +27,12 @@ export const userStore = defineStore('user', () => {
         userData.email = userObj.email;
         userData.authToken = userObj.authToken;
         userData.isLoggedIn = userObj.isLoggedIn;
-        
-        console.log('set user data', userData);
+
         sessionStorage.setItem('user', JSON.stringify(userData));
     }
-    
+
+    if (Object.keys(storedUser).length > 0) {
+      setUser(storedUser);
+    }    
     return { userData, setUser }
 })
