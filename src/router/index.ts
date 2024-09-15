@@ -4,6 +4,7 @@ import MainLayout from "../components/layouts/MainLayout.vue";
 import { authRoutes } from "./auth";
 import Surveys from "../views/Surveys.vue";
 import { userStore } from "../store/user";
+import SurveyView from "../views/SurveyView.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -26,7 +27,13 @@ const router = createRouter({
                     path : '/surveys', 
                     name: 'surveys',
                     component : Surveys
+                },
+                {
+                    path : '/survey/:id', 
+                    name: 'surveyView',
+                    component : SurveyView
                 }
+                
             ]
         },
     ]    
