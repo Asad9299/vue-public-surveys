@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
-import { ref, reactive } from "vue";
+import { reactive } from "vue";
 
 export type user = {
-  name: string,
+  name?: string,
   email: string,
   password?: string,
   password_confirmation?: string,

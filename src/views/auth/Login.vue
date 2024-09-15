@@ -6,23 +6,20 @@
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form class="space-y-6" action="#" method="POST">
+      <form class="space-y-6" @submit.prevent="login">
         <div>
           <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
           <div class="mt-2">
-            <input id="email" name="email" type="email" autocomplete="email" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            <input id="email" name="email" type="email" autocomplete="email" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" v-model="userData.email">
           </div>
         </div>
 
         <div>
           <div class="flex items-center justify-between">
             <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
-            <div class="text-sm">
-              <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a>
-            </div>
           </div>
           <div class="mt-2">
-            <input id="password" name="password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            <input id="password" name="password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" v-model="userData.password">
           </div>
         </div>
 
@@ -40,3 +37,47 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+  import { useRouter } from 'vue-router';
+  import ajax from '../../store/ajax.ts';
+  import type { user } from '../../store/user.ts';
+  import { userStore } from '../../store/user.ts';
+  import {reactive} from "vue";
+  import { useToast } from 'vue-toastification';
+  import { handleServerValidationErrors } from "../../helpers/utility.ts"
+  
+  const userData: user = reactive({
+      email: '',
+      password: ''
+    });
+
+  const userStoreObj = userStore();
+  const router       = useRouter();
+  const toast        = useToast();
+  
+  const login = async () => {
+    try {
+        const ajaxObj = new ajax();
+        const loginResponse = await ajaxObj.post('login', userData);
+        if(loginResponse.status === 200) {
+          // Set the user in Pinia
+          userData.isLoggedIn = true;
+          userData.authToken = loginResponse.data.token;
+          userStoreObj.setUser(userData);
+
+          toast.success("You've been logged in successfully");
+          // redirect to dashboard
+          router.push({name: 'dashboard'});          
+        }
+      } catch (error: any) {
+          if (error.response.status === 422) {
+            const formKeys = Object.keys(userData);
+            const errors   = error.response.data.errors;
+            handleServerValidationErrors(formKeys, errors);
+          } else if (error.response.status === 401) {
+            toast.error(error.response.data.error);
+          }
+      }
+  }
+</script>
