@@ -12,7 +12,7 @@
 
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
       <div
-        v-for="survey in surveyStoreObj.surveys"
+        v-for="survey in surveys"
         :key="survey.id"
         class="
           flex flex-col
@@ -32,7 +32,7 @@
 
         <div class="flex justify-between items-center mt-3">
           <router-link
-            :to="({ path: `survey/${survey.id}`})"
+            :to="({ name: 'surveyView', params: { id: survey.id }})"
             class="
               flex
               py-2
@@ -76,7 +76,6 @@
 
     const surveyStoreObj = surveyStore();
 
-    const surveys = ref<Survey[]>([]);
-    surveys.value = surveyStoreObj.surveys;
+    const surveys = ref<Survey[]>(surveyStoreObj.surveys);
 
 </script>
