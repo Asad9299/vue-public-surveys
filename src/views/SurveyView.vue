@@ -200,13 +200,43 @@
                 </div>
                 <!--/ Survey Fields -->
 
-                <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
-                    <h3 class="text-2xl font-semibold">Questions</h3>
-                    {{ survey }}
-                </div>
+            <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
+                <h3 class="text-2xl font-semibold flex items-center justify-between">
+                    Questions
 
-                <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                    <button
+                <!-- Add new question -->
+                <button
+                type="button"
+                class="flex items-center text-sm py-1 px-4 rounded-sm text-white bg-gray-600 hover:bg-gray-700"
+                >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                >
+                    <path
+                    fill-rule="evenodd"
+                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                    clip-rule="evenodd"
+                    />
+                </svg>
+                Add Question
+                </button>
+                <!--/ Add new question -->
+            </h3>
+          
+            <div v-if="!formData.questions.length" class="text-center text-gray-600">
+            You don't have any questions created
+            </div>
+            
+            <div v-for="(question, index) in formData.questions" >
+             {{ question }}
+            </div>
+        </div>
+
+            <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                <button
                     type="submit"
                     class="
                         inline-flex
@@ -228,22 +258,22 @@
                     "
                     >
                     Save
-                    </button>
-                </div>
-                </div>
-            </form>
+                </button>
             </div>
         </div>
-        </div>
+    </form>
+    </div>
+    </div>
+    </div>
     </PageComponent>
 
 </template>
 
 <script setup lang="ts">
-    import { reactive, ref } from 'vue';
+    import { reactive } from 'vue';
     import PageComponent from '../components/PageComponent.vue';
     import { useRoute, useRouter } from 'vue-router';
-    import { type Survey, surveyStore } from '../store/survey';
+    import { Question, surveyStore } from '../store/survey';
 
     const router = useRouter();
     
@@ -254,28 +284,24 @@
         title: '',
         slug: '',
         status: '',
-        image: {
-            type: String 
-        },
+        image: '',
         description: '',
         expire_date: '',
-        questions: [],
+        questions: [] as Question[]
     });
 
-    const survey = ref<Survey>();
-
     if(route.params.id) {
-        survey.value = surveyStoreObj.surveys.find(survey => survey.id ===  Number (route.params.id));
+        const survey = surveyStoreObj.surveys.find(survey => survey.id ===  Number (route.params.id));
 
-        if (survey.value) {
-            formData.title       = survey.value.title;
-            formData.slug        = survey.value.slug;
-            formData.status      = survey.value.status;
-            formData.image       = survey.value.image;
-            formData.description = survey.value.description;
-            formData.expire_date = survey.value.expire_date;
+        if (survey) {
+            formData.title       = survey.title;
+            formData.slug        = survey.slug;
+            formData.status      = survey.status;
+            formData.image       = survey.image;
+            formData.description = survey.description;
+            formData.expire_date = survey.expire_date;
+            formData.questions   = survey.questions;
         }
-
     }
 
 </script>
