@@ -235,6 +235,9 @@
                             <QuestionEditor
                                 :question="question"
                                 :index="index"
+                                @change="questionChange"
+                                @addQuestion="addQuestion"
+                                @deleteQuestion="deleteQuestion"
                             >
 
                             </QuestionEditor>
@@ -282,6 +285,18 @@
     import QuestionEditor from '../components/editor/QuestionEditor.vue';
 
     const router = useRouter();
+
+    const questionChange = (question:any) => {
+        console.log(question);
+    }
+
+    const addQuestion = () => {
+        // TODO
+    }
+
+    const deleteQuestion = () => {
+        // TODO
+    }
     
     const route = useRoute();
     const surveyStoreObj = surveyStore();

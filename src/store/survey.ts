@@ -164,7 +164,10 @@ export const surveyStore = defineStore('survey', () => {
         },
     ];
 
+    const questionTypes = ['text', 'select', 'radio', 'checkbox', 'textarea'];
+
     return {
-        surveys
+        surveys,
+        questionTypes
     }
 });
