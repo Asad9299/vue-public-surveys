@@ -283,6 +283,7 @@
     import { useRoute, useRouter } from 'vue-router';
     import { Question, surveyStore } from '../store/survey';
     import QuestionEditor from '../components/editor/QuestionEditor.vue';
+    import { v4 as uuidv4 } from 'uuid';
 
     const router = useRouter();
 
@@ -290,12 +291,23 @@
         console.log(question);
     }
 
-    const addQuestion = () => {
-        // TODO
+    const addQuestion = (index: number) => {
+        const newQuestion: Question = {
+            id: uuidv4(),
+            type: 'text',
+            question: '',
+            description: '',
+            data: {}
+        }
+        formData.questions.splice(index, 0, newQuestion);
     }
 
-    const deleteQuestion = () => {
-        // TODO
+    const deleteQuestion = (question: Question) => {
+        const questionIndex = formData.questions.findIndex(q =>q.id === question.id);
+    
+    if ( questionIndex !== undefined && questionIndex !== -1 ) { 
+      formData.questions.splice(questionIndex,1);
+    }
     }
     
     const route = useRoute();

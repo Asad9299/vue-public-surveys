@@ -2,7 +2,7 @@
     <!-- Question index -->
     <div class="flex items-center justify-between">
         <h3 class="text-lg font-bold">
-        {{ props.index + 1 }}
+        {{ props.index + 1 }} {{ props.question.question }}
         </h3>
 
     <div class="flex items-center">
@@ -297,5 +297,13 @@
 
   const upperCaseFirst = (type: string): string => {
     return type.charAt(0).toUpperCase() + type.slice(1);
+  }
+
+  const addQuestion = () => {
+    emit('addQuestion', props.index + 1);
+  }
+
+  const deleteQuestion = () => {
+    emit('deleteQuestion', props.question);
   }
 </script>
