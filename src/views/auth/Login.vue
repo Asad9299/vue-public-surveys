@@ -62,8 +62,11 @@
         const loginResponse = await ajaxObj.post('login', userData);
         if(loginResponse.status === 200) {
           // Set the user in Pinia
+          userData.id         = loginResponse.data.user.id;
+          userData.name       = loginResponse.data.user.name;
+          userData.email      = loginResponse.data.user.email;
           userData.isLoggedIn = true;
-          userData.authToken = loginResponse.data.token;
+          userData.authToken  = loginResponse.data.token;
           userStoreObj.setUser(userData);
 
           toast.success("You've been logged in successfully");
@@ -71,13 +74,14 @@
           router.push({name: 'dashboard'});          
         }
       } catch (error: any) {
-          if (error.response.status === 422) {
+          if (error && error.response && error.response.status === 422) {
             const formKeys = Object.keys(userData);
             const errors   = error.response.data.errors;
             handleServerValidationErrors(formKeys, errors);
-          } else if (error.response.status === 401) {
+          } else if ( error.response.status === 401) {
             toast.error(error.response.data.error);
           }
+
       }
   }
 </script>

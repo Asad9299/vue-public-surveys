@@ -13,7 +13,7 @@
     <div>
         <div>
             <div>
-                <form action="#" method="POST">
+                <form @submit.prevent="saveSurvey">
                     <div class="shadow sm:rounded-md sm:overflow-hidden">
                         <!-- Survey Fields -->
                         <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
@@ -177,6 +177,7 @@
                                 <input
                                 id="status"
                                 name="status"
+                                v-model="formData.status"
                                 type="checkbox"
                                 class="
                                     focus:ring-indigo-500
@@ -284,8 +285,29 @@
     import { Question, surveyStore } from '../store/survey';
     import QuestionEditor from '../components/editor/QuestionEditor.vue';
     import { v4 as uuidv4 } from 'uuid';
+    import ajax from '../store/ajax';
+    import { type User, userStore } from '../store/user';
+    import { useToast } from 'vue-toastification';
+    import { handleServerValidationErrors } from '../helpers/utility';
 
     const router = useRouter();
+    const route = useRoute();
+    const surveyStoreObj = surveyStore();
+    
+    const ajaxObj = new ajax();
+    const userStoreObj = userStore();
+    const toast = useToast();
+
+    let formData = reactive({
+        title: '',
+        slug: '',
+        status: '',
+        image: '',
+        description: '',
+        expire_date: '',
+        questions: [] as Question[],
+        user: {} as User
+    });
 
     const questionChange = (question:any) => {
         console.log(question);
@@ -304,25 +326,11 @@
 
     const deleteQuestion = (question: Question) => {
         const questionIndex = formData.questions.findIndex(q =>q.id === question.id);
-    
-    if ( questionIndex !== undefined && questionIndex !== -1 ) { 
-      formData.questions.splice(questionIndex,1);
+        if ( questionIndex !== undefined && questionIndex !== -1 ) { 
+        formData.questions.splice(questionIndex,1);
+        }
     }
-    }
     
-    const route = useRoute();
-    const surveyStoreObj = surveyStore();
-    
-    let formData = reactive({
-        title: '',
-        slug: '',
-        status: '',
-        image: '',
-        description: '',
-        expire_date: '',
-        questions: [] as Question[]
-    });
-
     if(route.params.id) {
         const survey = surveyStoreObj.surveys.find(survey => survey.id ===  Number (route.params.id));
 
@@ -337,4 +345,36 @@
         }
     }
 
+    const saveSurvey = async () => {
+        try {
+            if ( route.params.id ) {
+                // Update code goes here
+            } else {
+                formData.user = userStoreObj.getUser();
+                const response = await ajaxObj.post('survey', formData);
+                if ( 201 === response.status ) {
+                    toast.success("Survey has been created successfully");
+                    router.push({name: 'surveyView', params: { id: response.data.data.id } });
+                } else {
+                    toast.error("Something went wrong!");
+                }
+            }
+        } catch (error: any) {
+          if (error && error.response && 422 === error.response.status) {
+            const formKeys = Object.keys(formData);
+            const errors   = error.response.data.errors;
+            handleServerValidationErrors(formKeys, errors);
+            return false;
+          } else if ( error && error.response && 401 === error.response.status ) {
+            toast.error(error.response.data.error);
+            return false;
+          } else {
+            console.log('asad', error);
+            return false;
+
+            const errorMessage = error.response?.data.message ?? "An unexpected error occurred. Please try again.";
+            toast.error(errorMessage);
+          }
+      }
+    }
 </script>

@@ -6,6 +6,15 @@
                 <h1 class="text-3xl font-bold tracking-tight text-gray-900">
                     Surveys 
                 </h1>
+                
+                <router-link
+                  :to="({ name: 'surveyCreate'})"
+                  class="absolute right-0 transform -translate-y-1/2 inline-flex items-center px-4 py-2 bg-green-500 text-white font-semibold text-sm rounded-md shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                  </svg>
+                  Create Survey
+                </router-link> 
             </div>
         </header>
        </template>

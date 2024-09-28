@@ -29,6 +29,11 @@ const router = createRouter({
                     component : Surveys
                 },
                 {
+                    path : '/survey/create', 
+                    name: 'surveyCreate',
+                    component : SurveyView
+                },
+                {
                     path : '/survey/:id', 
                     name: 'surveyView',
                     component : SurveyView

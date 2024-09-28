@@ -1,15 +1,16 @@
 import axios, { AxiosResponse } from "axios";
-import { userStore, user } from "./user";
+import { userStore, type User } from "./user";
 
 export default class ajax {
     
-    user: user;
+    user: User;
     headers: Record<string, string> =  {};
     APP_API_URL: String = import.meta.env.VITE_API_URL;
 
     constructor() {
         this.setHeader('Accept', 'application/json');
-        this.user = userStore();
+        const userStoreObj = userStore();
+        this.user = userStoreObj.getUser();
         if (this.user.isLoggedIn) {
             this.setHeader('Authorization', this.getAuthBearerHeader())
         }
