@@ -101,18 +101,33 @@
     import PageComponent from '../components/PageComponent.vue';
     import { onMounted } from "vue";
     import { surveyStore, type Survey } from '../store/survey';
-import { getFullImageURL } from '../helpers/utility';
+    import { getFullImageURL } from '../helpers/utility';
+    import ajax from '../store/ajax';
+    import { useToast } from 'vue-toastification';
 
     const surveyStoreObj = surveyStore();
+    const toast = useToast();
 
     // Fetch the surveys when the component is mounted
     onMounted(() => {
       surveyStoreObj.surveyList();
     });
 
-    const deleteSurvey = (survey: Survey) => {
-      if (confirm('Are you sure you want to delete this Survey?')) {
-        // @TODO: Delete Survey Code goes here.
+    const deleteSurvey = async(survey: Survey) => {
+      try {
+        if (confirm('Are you sure you want to delete this Survey?')) {
+          const ajaxObj = new ajax();
+          const response = await ajaxObj.delete(`survey/${survey.id}`);
+          if ( 204 === response.status ) {
+            surveyStoreObj.surveys = surveyStoreObj.surveys.filter((sr) => {
+              return sr.id !== survey.id 
+            });
+            toast.success('Survey has been deleted successfully');
+            
+          }
+        }
+      } catch ( error:any ) {
+        toast.error(error);
       }
     }
 </script>
