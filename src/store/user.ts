@@ -35,7 +35,6 @@ export const userStore = defineStore('user', () => {
     }
 
     const getUser = (): User => {
-      console.log('get User', storedUser);
       return storedUser;
     }
 

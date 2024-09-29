@@ -23,17 +23,15 @@
                                 Image
                             </label>
                             <div class="mt-1 flex items-center">
+                                <img
+                                    v-if="image_url"
+                                    :src="image_url"
+                                    :alt="formData.title"
+                                    class="w-64 h-48 object-cover"
+                                />
                                 <span
-                                class="
-                                    flex
-                                    items-center
-                                    justify-center
-                                    h-12
-                                    w-12
-                                    rounded-full
-                                    overflow-hidden
-                                    bg-gray-100
-                                "
+                                    v-else
+                                    class="flex items-center justify-center h-12 w-12 rounded-full overflow-hidden bg-gray-100"
                                 >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -69,10 +67,13 @@
                                     focus:ring-2
                                     focus:ring-offset-2
                                     focus:ring-indigo-500
+                                    cursor-pointer
                                 "
                                 >
-                                <input
+                                <input                  
                                     type="file"
+                                    accept="image/*" 
+                                    @change="imagePreview"
                                     class="
                                     absolute
                                     left-0
@@ -279,7 +280,7 @@
 </template>
 
 <script setup lang="ts">
-    import { reactive } from 'vue';
+    import { reactive, ref } from 'vue';
     import PageComponent from '../components/PageComponent.vue';
     import { useRoute, useRouter } from 'vue-router';
     import { Question, surveyStore } from '../store/survey';
@@ -297,6 +298,7 @@
     const ajaxObj = new ajax();
     const userStoreObj = userStore();
     const toast = useToast();
+    const image_url = ref();
 
     let formData = reactive({
         title: '',
@@ -304,10 +306,24 @@
         status: '',
         image: '',
         description: '',
-        expire_date: '',
+        expire_date: null as Date | string | null,
         questions: [] as Question[],
         user: {} as User
     });
+
+    /* 
+        Image Preview
+    */
+    const imagePreview = (event: any) => {
+        const file = event.target.files[0];
+
+        const reader  = new FileReader();
+        reader.onload = () => {
+            image_url.value = reader.result;
+            formData.image  = reader.result as string;
+        };
+        reader.readAsDataURL(file);
+    }
 
     const questionChange = (question:any) => {
         console.log(question);
@@ -338,10 +354,10 @@
             formData.title       = survey.title;
             formData.slug        = survey.slug;
             formData.status      = survey.status;
-            formData.image       = survey.image;
+            formData.image       = survey.image ?? '';
             formData.description = survey.description;
-            formData.expire_date = survey.expire_date;
-            formData.questions   = survey.questions;
+            formData.expire_date = survey.expire_date ?? null;
+            formData.questions   = survey.questions ?? [];
         }
     }
 
@@ -369,9 +385,6 @@
             toast.error(error.response.data.error);
             return false;
           } else {
-            console.log('asad', error);
-            return false;
-
             const errorMessage = error.response?.data.message ?? "An unexpected error occurred. Please try again.";
             toast.error(errorMessage);
           }

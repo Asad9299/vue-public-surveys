@@ -20,8 +20,8 @@
        </template>
 
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
-      <div
-        v-for="survey in surveys"
+          <div
+        v-for="survey in surveyStoreObj.surveys"
         :key="survey.id"
         class="
           flex flex-col
@@ -99,12 +99,15 @@
 
 <script setup lang="ts">
     import PageComponent from '../components/PageComponent.vue';
-    import { ref } from "vue";
+    import { onMounted } from "vue";
     import { surveyStore, type Survey } from '../store/survey';
 
     const surveyStoreObj = surveyStore();
 
-    const surveys = ref<Survey[]>(surveyStoreObj.surveys);
+    // Fetch the surveys when the component is mounted
+    onMounted(() => {
+      surveyStoreObj.surveyList();
+    });
 
     const deleteSurvey = (survey: Survey) => {
       if (confirm('Are you sure you want to delete this Survey?')) {
