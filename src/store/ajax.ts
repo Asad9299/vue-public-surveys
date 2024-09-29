@@ -34,4 +34,13 @@ export default class ajax {
         return response;
     }
 
+    async put<T>(endpoint: string, data: T): Promise<AxiosResponse> {
+        let response = await axios.put(this.APP_API_URL + endpoint, data, { headers: this.headers });
+        return response;
+    }
+
+    async delete<T>(endpoint: string): Promise<AxiosResponse<T>> {
+        let response = await axios.delete(this.APP_API_URL + endpoint, { headers: this.headers });
+        return response;
+    }
 }
