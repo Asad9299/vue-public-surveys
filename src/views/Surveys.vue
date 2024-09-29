@@ -33,7 +33,7 @@
           h-[470px]
         "
       >
-        <img :src="survey.image" alt="" class="w-full h-48 object-cover" />
+        <img :src="getFullImageURL(survey.image)" alt="" class="w-full h-48 object-cover" />
         <h4 class="mt-4 text-lg font-bold">{{ survey.title }}</h4>
         
         <div v-html="survey.description" class="overflow-hidden flex-1">
@@ -101,6 +101,7 @@
     import PageComponent from '../components/PageComponent.vue';
     import { onMounted } from "vue";
     import { surveyStore, type Survey } from '../store/survey';
+import { getFullImageURL } from '../helpers/utility';
 
     const surveyStoreObj = surveyStore();
 
