@@ -61,12 +61,12 @@
         const ajaxObj = new ajax();
         const loginResponse = await ajaxObj.post('login', userData);
         if(loginResponse.status === 200) {
-          // Set the user in Pinia
-          userData.id         = loginResponse.data.user.id;
-          userData.name       = loginResponse.data.user.name;
-          userData.email      = loginResponse.data.user.email;
-          userData.isLoggedIn = true;
-          userData.authToken  = loginResponse.data.token;
+          const userData = {
+            id         : loginResponse.data.user.id,
+            name       : loginResponse.data.user.name,
+            email      : loginResponse.data.user.email,
+            authToken  : loginResponse.data.token
+          }
           userStoreObj.setUser(userData);
 
           toast.success("You've been logged in successfully");

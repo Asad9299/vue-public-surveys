@@ -20,6 +20,10 @@
        </template>
 
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+            <!-- Show Spinner -->
+            <div v-if="surveyStoreObj.isLoading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70 z-10">
+                <PulseLoader />
+            </div>
           <div
         v-for="survey in surveyStoreObj.surveys"
         :key="survey.id"
@@ -99,11 +103,13 @@
 
 <script setup lang="ts">
     import PageComponent from '../components/PageComponent.vue';
-    import { onMounted } from "vue";
+    import { onMounted, ref } from "vue";
     import { surveyStore, type Survey } from '../store/survey';
     import { getFullImageURL } from '../helpers/utility';
     import ajax from '../store/ajax';
     import { useToast } from 'vue-toastification';
+    import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
+
 
     const surveyStoreObj = surveyStore();
     const toast = useToast();

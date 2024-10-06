@@ -7,49 +7,40 @@ export type User = {
   email: string,
   password?: string,
   password_confirmation?: string,
-  authToken?: string,
-  isLoggedIn?: boolean
+  authToken?: string
 }
 
 export const userStore = defineStore('user', () => {
 
-  let storedUser: any = sessionStorage.getItem('user');
-  storedUser     = storedUser ? JSON.parse(storedUser) : false;
-
-    const userData: User = reactive({
+    const storedUser = localStorage.getItem('user');
+    const initialUser: User = storedUser ? JSON.parse(storedUser) : {
         id: 0,
         name: '',
         email: '',
-        authToken: '',
-        isLoggedIn: false,
-      });
+        authToken: ''
+    };
+
+    const userData: User = reactive({
+        ...initialUser 
+    });
 
     const setUser = (userObj: User) => {
-        userData.id         = userObj.id;
-        userData.name       = userObj.name;
-        userData.email      = userObj.email;
-        userData.authToken  = userObj.authToken;
-        userData.isLoggedIn = userObj.isLoggedIn;
-
-        sessionStorage.setItem('user', JSON.stringify(userData));
+        Object.assign(userData, userObj);
+        localStorage.setItem('user', JSON.stringify(userData)); 
     }
 
     const getUser = (): User => {
-      return storedUser;
+        return userData;
     }
 
     const removeUser = () => {
-      userData.id = 0;
-      userData.name = '';
-      userData.email = '';
-      userData.authToken = '';
-      userData.isLoggedIn = false;
-
-      sessionStorage.removeItem('user');
+        userData.id = 0;
+        userData.name = '';
+        userData.email = '';
+        userData.authToken = '';
+        
+        localStorage.removeItem('user');
     }
 
-    if (Object.keys(storedUser).length > 0) {
-      setUser(storedUser);
-    }    
-    return { userData, setUser, getUser, removeUser }
-})
+    return { userData, setUser, getUser, removeUser };
+});

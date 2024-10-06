@@ -11,7 +11,7 @@ export default class ajax {
         this.setHeader('Accept', 'application/json');
         const userStoreObj = userStore();
         this.user = userStoreObj.getUser();
-        if (this.user.isLoggedIn) {
+        if (this.user.authToken) {
             this.setHeader('Authorization', this.getAuthBearerHeader())
         }
     }

@@ -79,7 +79,6 @@
         const registerResponse = await ajaxObj.post('register', userData);
         if(registerResponse.status === 200) {
           // Set the user in Pinia
-          userData.isLoggedIn = true;
           userData.authToken = registerResponse.data.token;
           userStoreObj.setUser(userData);
 

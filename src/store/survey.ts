@@ -38,6 +38,8 @@ export const surveyStore = defineStore('survey', () => {
 
     const questionTypes = ['text', 'select', 'radio', 'checkbox', 'textarea'];
 
+    const isLoading = ref(true);
+
     const surveyList = async () => {
         try {
             const ajaxObj = new ajax();
@@ -45,6 +47,8 @@ export const surveyStore = defineStore('survey', () => {
             surveys.value = response.data.data;
         } catch ( error: any ) {
             console.error("Failed to fetch surveys:", error);
+        } finally {
+            isLoading.value = false;
         }
     }
 
@@ -52,5 +56,6 @@ export const surveyStore = defineStore('survey', () => {
         surveys,
         questionTypes,
         surveyList,
+        isLoading
     }
 });

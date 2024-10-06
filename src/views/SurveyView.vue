@@ -13,7 +13,12 @@
     <div>
         <div>
             <div>
-                <form @submit.prevent="saveSurvey">
+                <form @submit.prevent="saveSurvey" class="relative">
+                    <!-- Show Loader -->
+                    <div v-if="isLoading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-10">
+                        <PulseLoader />
+                    </div>
+                    <!-- Show Loader -->
                     <div class="shadow sm:rounded-md sm:overflow-hidden">
                         <!-- Survey Fields -->
                         <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
@@ -283,17 +288,18 @@
     import { reactive, ref } from 'vue';
     import PageComponent from '../components/PageComponent.vue';
     import { useRoute, useRouter } from 'vue-router';
-    import { Question, surveyStore } from '../store/survey';
+    import { Question } from '../store/survey';
     import QuestionEditor from '../components/editor/QuestionEditor.vue';
     import { v4 as uuidv4 } from 'uuid';
     import ajax from '../store/ajax';
     import { type User, userStore } from '../store/user';
     import { useToast } from 'vue-toastification';
     import { handleServerValidationErrors } from '../helpers/utility';
+    import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
     const router = useRouter();
     const route = useRoute();
-    const surveyStoreObj = surveyStore();
+    const isLoading = ref(false);
     
     const ajaxObj = new ajax();
     const userStoreObj = userStore();
@@ -303,7 +309,7 @@
     let formData = reactive({
         title: '',
         slug: '',
-        status: '',
+        status: 0,
         image: '',
         description: '',
         expire_date: null as Date | string | null,
@@ -347,27 +353,63 @@
         }
     }
     
-    if(route.params.id) {
-        const survey = surveyStoreObj.surveys.find(survey => survey.id ===  Number (route.params.id));
-
-        if (survey) {
-            formData.title       = survey.title;
-            formData.slug        = survey.slug;
-            formData.status      = survey.status;
-            formData.image       = survey.image ?? '';
-            formData.description = survey.description;
-            formData.expire_date = survey.expire_date ?? null;
-            formData.questions   = survey.questions ?? [];
+    
+    const getSurvey = async (surveyId: string) => {
+        try {
+            isLoading.value = true;
+            const response = await ajaxObj.get(`survey/${surveyId}`);
+            isLoading.value = false;
+            
+            if ( 200 === response.status ) {
+                const survey         = response.data.data;
+                formData.title       = survey.title;
+                formData.slug        = survey.slug;
+                formData.status      = survey.status;
+                image_url.value      = survey.image_url ?? '';
+                formData.description = survey.description;
+                formData.expire_date = survey.expire_date ?? null;
+                formData.questions   = survey.questions ?? [];
+            }
+        } catch ( error: any ) {
+            isLoading.value = false;
+            if (error && error.response && 422 === error.response.status) {
+                const formKeys = Object.keys(formData);
+                const errors   = error.response.data.errors;
+                handleServerValidationErrors(formKeys, errors);
+                return false;
+            } else if ( error && error.response && 401 === error.response.status ) {
+                toast.error(error.response.data.error);
+                return false;
+            } else {
+                const errorMessage = error.response?.data.message ?? "An unexpected error occurred. Please try again.";
+                toast.error(errorMessage);
+            }  
         }
     }
+
+    if(route.params.id) {
+        getSurvey(route.params.id as string); 
+    }
+
 
     const saveSurvey = async () => {
         try {
             if ( route.params.id ) {
                 // Update code goes here
+                isLoading.value = true;
+                const response = await ajaxObj.put(`survey/${route.params.id}`, formData);
+                isLoading.value = false;
+                if ( 200 === response.status ) {
+                    toast.success("Survey has been updated successfully");
+                    router.push({name: 'surveyView', params: { id: response.data.data.id } });
+                } else {
+                    toast.error("Something went wrong!");
+                }
             } else {
                 formData.user = userStoreObj.getUser();
+                isLoading.value = true;
                 const response = await ajaxObj.post('survey', formData);
+                isLoading.value = false;
                 if ( 201 === response.status ) {
                     toast.success("Survey has been created successfully");
                     router.push({name: 'surveyView', params: { id: response.data.data.id } });
@@ -376,18 +418,19 @@
                 }
             }
         } catch (error: any) {
-          if (error && error.response && 422 === error.response.status) {
-            const formKeys = Object.keys(formData);
-            const errors   = error.response.data.errors;
-            handleServerValidationErrors(formKeys, errors);
-            return false;
-          } else if ( error && error.response && 401 === error.response.status ) {
-            toast.error(error.response.data.error);
-            return false;
-          } else {
-            const errorMessage = error.response?.data.message ?? "An unexpected error occurred. Please try again.";
-            toast.error(errorMessage);
-          }
-      }
+            isLoading.value = false;
+            if (error && error.response && 422 === error.response.status) {
+                const formKeys = Object.keys(formData);
+                const errors   = error.response.data.errors;
+                handleServerValidationErrors(formKeys, errors);
+                return false;
+            } else if ( error && error.response && 401 === error.response.status ) {
+                toast.error(error.response.data.error);
+                return false;
+            } else {
+                const errorMessage = error.response?.data.message ?? "An unexpected error occurred. Please try again.";
+                toast.error(errorMessage);
+            }
+        }
     }
 </script>

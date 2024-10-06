@@ -11,5 +11,5 @@ export const handleServerValidationErrors = (formKeys: Array<any>, errors: any) 
 }
 
 export const getFullImageURL = (image: string | undefined): string => {
-  return image ? import.meta.env.VITE_BASE_URL+image: "";
+  return image ? import.meta.env.VITE_BASE_URL+image: "https://flowbite.com/docs/images/examples/image-1@2x.jpg";
 }

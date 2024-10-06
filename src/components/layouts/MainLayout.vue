@@ -185,6 +185,7 @@ const isRouteActive = (path: string): boolean => {
 };
 
 const logout = (): void => {
+  alert('caless');
   userStoreObj.removeUser();
   router.push("/login");
 };
