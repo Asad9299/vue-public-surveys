@@ -282,7 +282,10 @@
   }
 
   const addOption = (): void => {
-    props.question.data?.options?.push({uuid: uuidv4(), text: ''});
+    props.question.data = props.question.data ?? {};
+    props.question.data.options = props.question.data.options ?? [];
+
+    props.question.data.options.push({uuid: uuidv4(), text: ''});
     emit('change', props.question.data?.options);
   }
 

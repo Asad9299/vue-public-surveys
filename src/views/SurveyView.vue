@@ -216,7 +216,7 @@
                             <button
                             type="button"
                             class="flex items-center text-sm py-1 px-4 rounded-sm text-white bg-gray-600 hover:bg-gray-700"
-                            >
+                            @click="addQuestion(0)">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 class="h-4 w-4"
