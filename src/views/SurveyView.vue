@@ -216,7 +216,7 @@
                             <button
                             type="button"
                             class="flex items-center text-sm py-1 px-4 rounded-sm text-white bg-gray-600 hover:bg-gray-700"
-                            @click="addQuestion(0)">
+                            @click="addQuestion(formData.questions.length ?? 0)">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 class="h-4 w-4"
@@ -400,6 +400,9 @@
                 const response = await ajaxObj.put(`survey/${route.params.id}`, formData);
                 isLoading.value = false;
                 if ( 200 === response.status ) {
+                    // @TODO: Can be removed
+                    getSurvey(response.data.data.id);
+                    
                     toast.success("Survey has been updated successfully");
                     router.push({name: 'surveyView', params: { id: response.data.data.id } });
                 } else {
