@@ -40,11 +40,20 @@ export const surveyStore = defineStore('survey', () => {
 
     const isLoading = ref(true);
 
-    const surveyList = async () => {
+    const paginateLinks:any = ref({});
+
+    const surveyList = async (link:any = {}) => {
         try {
+            isLoading.value = true;
             const ajaxObj = new ajax();
-            const response = await ajaxObj.get('survey');
+            let reqURL = 'survey';
+            if ( link.url ) {
+                const url = new URL(link.url);
+                reqURL = `survey${url.search}`; 
+            }
+            const response = await ajaxObj.get(reqURL);
             surveys.value = response.data.data;
+            paginateLinks.value = response.data.meta;
         } catch ( error: any ) {
             console.error("Failed to fetch surveys:", error);
         } finally {
@@ -56,6 +65,7 @@ export const surveyStore = defineStore('survey', () => {
         surveys,
         questionTypes,
         surveyList,
-        isLoading
+        isLoading,
+        paginateLinks
     }
 });
