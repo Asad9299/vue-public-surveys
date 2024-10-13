@@ -3,7 +3,14 @@ const toast = useToast();
 
 export const handleServerValidationErrors = (formKeys: Array<any>, errors: any) => {
     for(const key of formKeys) {
-        if(key in errors) {
+      
+      if (key.startsWith('questions')) {
+        Object.values(errors).forEach((message:any) => {
+          toast.error(message[0]);
+        });
+      }
+
+      if(key in errors) {
           toast.error(errors?.[key][0]);
           break;
         }
