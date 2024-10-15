@@ -3,16 +3,17 @@ import ajax from "./ajax";
 import { ref } from "vue";
 
 export type Survey = {
-    id: number,
+    id: number | string,
     title: string,
     slug: string,
-    status: string,
+    status: boolean,
     image?: string,
     description: string,
     created_at: Date | string,
     updated_at?: Date | string,
     expire_date?: Date | string,
-    questions?: Question[]
+    questions?: Question[],
+    image_url?: string
 }
 
 export type Question = {

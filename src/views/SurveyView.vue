@@ -288,13 +288,15 @@
     import { reactive, ref } from 'vue';
     import PageComponent from '../components/PageComponent.vue';
     import { useRoute, useRouter } from 'vue-router';
-    import { Question } from '../store/survey';
+    import { Question, Survey } from '../store/survey';
     import QuestionEditor from '../components/editor/QuestionEditor.vue';
+    // @ts-ignore
     import { v4 as uuidv4 } from 'uuid';
     import ajax from '../store/ajax';
     import { type User, userStore } from '../store/user';
     import { useToast } from 'vue-toastification';
     import { handleServerValidationErrors } from '../helpers/utility';
+    // @ts-ignore
     import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
     const router = useRouter();
@@ -307,9 +309,10 @@
     const image_url = ref();
 
     let formData = reactive({
+        id: '' as string | number,
         title: '',
         slug: '',
-        status: 0,
+        status: false,
         image: '',
         description: '',
         expire_date: null as Date | string | null,
@@ -362,13 +365,7 @@
             
             if ( 200 === response.status ) {
                 const survey         = response.data.data;
-                formData.title       = survey.title;
-                formData.slug        = survey.slug;
-                formData.status      = survey.status;
-                image_url.value      = survey.image_url ?? '';
-                formData.description = survey.description;
-                formData.expire_date = survey.expire_date ?? null;
-                formData.questions   = survey.questions ?? [];
+                updateFormData(survey);
             }
         } catch ( error: any ) {
             isLoading.value = false;
@@ -400,8 +397,9 @@
                 const response = await ajaxObj.put(`survey/${route.params.id}`, formData);
                 isLoading.value = false;
                 if ( 200 === response.status ) {
-                    // @TODO: Can be removed
-                    getSurvey(response.data.data.id);
+
+                    const survey         = response.data.data;
+                    updateFormData(survey);
                     
                     toast.success("Survey has been updated successfully");
                     router.push({name: 'surveyView', params: { id: response.data.data.id } });
@@ -435,5 +433,16 @@
                 toast.error(errorMessage);
             }
         }
+    }
+
+    const updateFormData = ( survey: Survey ): void => {
+        formData.id          = survey.id; 
+        formData.title       = survey.title;
+        formData.slug        = survey.slug;
+        formData.status      = survey.status;
+        image_url.value      = survey.image_url ?? '';
+        formData.description = survey.description;
+        formData.expire_date = survey.expire_date ?? null;
+        formData.questions   = survey.questions ?? [];
     }
 </script>
