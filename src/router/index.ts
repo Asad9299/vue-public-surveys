@@ -5,6 +5,7 @@ import { authRoutes } from "./auth";
 import Surveys from "../views/Surveys.vue";
 import { userStore } from "../store/user";
 import SurveyView from "../views/SurveyView.vue";
+import SurveyPublicView from "../views/SurveyPublicView.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -37,6 +38,11 @@ const router = createRouter({
                     path : '/survey/:id', 
                     name: 'surveyView',
                     component : SurveyView
+                },
+                {
+                    path: '/view/survey/:slug',
+                    name: 'SurveyPublicView',
+                    component: SurveyPublicView
                 }
                 
             ]

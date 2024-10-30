@@ -335,7 +335,8 @@
     }
 
     const questionChange = (question:any) => {
-        console.log(question);
+
+        console.log('question chage', question);
     }
 
     const addQuestion = (index: number) => {
