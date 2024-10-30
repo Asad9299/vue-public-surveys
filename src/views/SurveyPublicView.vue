@@ -82,7 +82,8 @@ const getSurveyBySlug = async ( slug: string ) => {
 }
 getSurveyBySlug( slug );
 
-const saveAnswers = () => {
-    console.log("answers", answers.value);
-} 
+const saveAnswers = async () => {
+    const response = await ajaxObj.post(`survey/${survey.value?.id}`, answers.value);
+    console.log('asad checking res', response);
+}   
 </script>
