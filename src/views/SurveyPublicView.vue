@@ -31,14 +31,8 @@
                     </p>
                 </div>
             </div>
-            
-            <div v-if="surveyFinished" class="py-8 px-6 bg-emerald-400 text-white w-[600px] mx-auto">
-                    <div class="text-xl mb-3 font-semibold ">Thank you for participating in this survey.</div>
-                    <button type="button" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Submit another response
-                    </button>
-            </div>
-            <div v-else>
+        
+            <div>
                 <hr class="my-3" />
                 <div v-for="(question, index) in survey?.questions">
                     <QuestionViewer 
@@ -64,8 +58,9 @@ import QuestionViewer from '../components/viewer/QuestionViewer.vue';
 import ajax from '../store/ajax';
 import { useRoute } from 'vue-router';
 import { type Survey } from '../store/survey';
+import { useToast } from 'vue-toastification';
+import { handleServerValidationErrors } from '../helpers/utility';
 
-const surveyFinished = ref(false);
 const answers:any = ref({});
 
 // Get Survey By Slug
@@ -82,8 +77,33 @@ const getSurveyBySlug = async ( slug: string ) => {
 }
 getSurveyBySlug( slug );
 
+const toast = useToast();
+
 const saveAnswers = async () => {
-    const response = await ajaxObj.post(`survey/${survey.value?.id}`, answers.value);
-    console.log('asad checking res', response);
+    try {
+        let data = {
+            answers: answers.value
+        }
+        const response = await ajaxObj.post(`survey/${survey.value?.id}/answer`, JSON.parse(JSON.stringify(data)) );
+        console.log(response);
+
+        if ( 201 === response.status ) {
+            toast.success('Answer Recorded Successfully!');   
+        }
+        toast.error('Error, recording the answer. Please try again after sometime');
+    } catch ( error: any ) {
+        if (error && error.response && 422 === error.response.status) {
+            const formKeys = Object.keys({answers});
+            const errors   = error.response.data.errors;
+            handleServerValidationErrors(formKeys, errors);
+            return false;
+        } else if ( error && error.response && 401 === error.response.status ) {
+            toast.error(error.response.data.error);
+            return false;
+        } else {
+            const errorMessage = error.response?.data.message ?? "An unexpected error occurred. Please try again.";
+            toast.error(errorMessage);
+        }
+    }
 }   
 </script>
