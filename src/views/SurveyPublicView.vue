@@ -85,7 +85,6 @@ const saveAnswers = async () => {
             answers: answers.value
         }
         const response = await ajaxObj.post(`survey/${survey.value?.id}/answer`, JSON.parse(JSON.stringify(data)) );
-        console.log(response);
 
         if ( 201 === response.status ) {
             toast.success('Answer Recorded Successfully!');   

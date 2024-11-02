@@ -13,5 +13,24 @@
 </template>
 
 <script setup lang="ts">
+    import { onMounted } from 'vue';
     import PageComponent from '../components/PageComponent.vue';
+    import ajax from '../store/ajax';
+    import { userStore } from '../store/user';
+    
+    const ajaxObj = new ajax();
+    const userStoreObj = userStore();
+
+    const loadData = async() => {
+        let data = {
+            user: userStoreObj.getUser()
+        };
+        const response = await ajaxObj.post('dashboard', data);
+        console.log('dashboard response', response);
+    }
+
+    onMounted(() => {
+        loadData();
+    });
+
 </script>
