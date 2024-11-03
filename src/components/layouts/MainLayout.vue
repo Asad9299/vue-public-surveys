@@ -6,7 +6,7 @@
           <div class="flex-shrink-0">
             <img
               class="h-8 w-8"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+              src="https://tailwindcss.com/_next/static/media/tailwindcss-mark.3c5441fc7a190fb1800d4a5c7f07ba4b1345a9c8.svg"
               alt="Your Company"
             />
           </div>
@@ -40,8 +40,8 @@
                   <span class="sr-only">Open user menu</span>
                   <img
                     class="h-8 w-8 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt=""
+                    src="https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1095249842.jpg"
+                    alt="User Image"
                   />
                 </button>
               </div>
@@ -137,13 +137,13 @@
           <div class="flex-shrink-0">
             <img
               class="h-10 w-10 rounded-full"
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-              alt=""
+              src="https://www.shutterstock.com/image-vector/blank-avatar-photo-place-holder-600nw-1095249842.jpg"
+              alt="User Image"
             />
           </div>
           <div class="ml-3">
             <div class="text-sm font-medium leading-none text-gray-400">
-              tom@example.com
+              {{ userStoreObj.getUser() ? userStoreObj.getUser().email : 'guest@gmail.com' }}
             </div>
           </div>
         </div>
@@ -185,7 +185,6 @@ const isRouteActive = (path: string): boolean => {
 };
 
 const logout = (): void => {
-  alert('caless');
   userStoreObj.removeUser();
   router.push("/login");
 };

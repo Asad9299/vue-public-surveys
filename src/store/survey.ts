@@ -13,7 +13,8 @@ export type Survey = {
     updated_at?: Date | string,
     expire_date?: Date | string,
     questions?: Question[],
-    image_url?: string
+    image_url?: string,
+    answers?: any,
 }
 
 export type Question = {
@@ -22,6 +23,11 @@ export type Question = {
     question: string,
     description?: string | null,
     data?: QuestionData | null 
+}
+
+export type Answer = {
+    id: any
+    answer?: any
 }
 
 export type QuestionData = {
