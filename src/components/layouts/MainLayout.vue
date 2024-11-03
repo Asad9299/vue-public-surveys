@@ -33,8 +33,9 @@
                   type="button"
                   class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                   id="user-menu-button"
-                  aria-expanded="false"
+                  :aria-expanded="dropdownOpen ? 'true' : 'false'"
                   aria-haspopup="true"
+                  @click="toggleDropdown"
                 >
                   <span class="absolute -inset-1.5"></span>
                   <span class="sr-only">Open user menu</span>
@@ -62,6 +63,7 @@
                 aria-orientation="vertical"
                 aria-labelledby="user-menu-button"
                 tabindex="-1"
+                v-if="dropdownOpen"
               >
                 <!-- Active: "bg-gray-100", Not Active: "" -->
                 <a
@@ -164,6 +166,7 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
 import { userStore } from "../../store/user";
+import { onMounted, onUnmounted, ref } from "vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -183,6 +186,25 @@ const navigationItems: navigationItemObj[] = [
 const isRouteActive = (path: string): boolean => {
   return route.path === path;
 };
+const dropdownOpen = ref(false);
+
+const toggleDropdown = (event: MouseEvent) => {
+  event.stopPropagation(); 
+  dropdownOpen.value = !dropdownOpen.value;
+};
+
+const closeDropdown = () => {
+  dropdownOpen.value = false;
+};
+
+onMounted(() => {
+  document.addEventListener("click", closeDropdown);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("click", closeDropdown);
+});
+
 
 const logout = (): void => {
   userStoreObj.removeUser();
