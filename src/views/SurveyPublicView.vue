@@ -88,8 +88,9 @@ const saveAnswers = async () => {
 
         if ( 201 === response.status ) {
             toast.success('Answer Recorded Successfully!');   
+        } else {
+            toast.error('Error, recording the answer. Please try again after sometime');
         }
-        toast.error('Error, recording the answer. Please try again after sometime');
     } catch ( error: any ) {
         if (error && error.response && 422 === error.response.status) {
             const formKeys = Object.keys({answers});
