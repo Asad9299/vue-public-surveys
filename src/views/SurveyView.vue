@@ -393,7 +393,12 @@
     const saveSurvey = async () => {
         try {
             if ( route.params.id ) {
+                const user = userStoreObj.getUser();
                 // Update code goes here
+                const data = {
+                    ...formData,
+                    user
+                }
                 isLoading.value = true;
                 const response = await ajaxObj.put(`survey/${route.params.id}`, formData);
                 isLoading.value = false;

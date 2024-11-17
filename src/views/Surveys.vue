@@ -79,10 +79,11 @@
                   </router-link>
                   
                   <!--  -->
-                  <div class="flex items-center" v-if="survey.status">
+                  <div class="flex items-center">
                     <a
                       :href="`/view/survey/${survey.slug}`"
                       target="_blank"
+                      v-if="survey.status"
                       class="h-8 w-8 flex items-center justify-center rounded-full 
                             border border-transparent text-sm text-indigo-500 
                             focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -168,9 +169,11 @@
     import { useToast } from 'vue-toastification';
     // @ts-ignore
     import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
+    import { userStore } from '../store/user';
 
 
     const surveyStoreObj = surveyStore();
+    const userStoreObj   = userStore();
     const toast = useToast();
 
     // Fetch the surveys when the component is mounted
@@ -190,8 +193,10 @@
     const deleteSurvey = async(survey: Survey) => {
       try {
         if (confirm('Are you sure you want to delete this Survey?')) {
+          const user = userStoreObj.getUser();
+
           const ajaxObj = new ajax();
-          const response = await ajaxObj.delete(`survey/${survey.id}`);
+          const response = await ajaxObj.delete(`survey/${survey.id}`, {user: user});
           if ( 204 === response.status ) {
             surveyStoreObj.surveys = surveyStoreObj.surveys.filter((sr) => {
               return sr.id !== survey.id 
