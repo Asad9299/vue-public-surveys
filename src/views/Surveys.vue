@@ -79,7 +79,7 @@
                   </router-link>
                   
                   <!--  -->
-                  <div class="flex items-center">
+                  <div class="flex items-center" v-if="survey.status">
                     <a
                       :href="`/view/survey/${survey.slug}`"
                       target="_blank"
