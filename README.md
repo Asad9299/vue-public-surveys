@@ -34,11 +34,11 @@ Ensure you have the following installed:
     ```bash
     npm install
     ```
-After the installation is complete, copy the .env.example file to .env and update the following variables with the appropriate URLs:
-3. update .env with
+
+3. After the installation is complete, copy the .env.example file to .env and update the following variables with the appropriate URLs:
     ```bash
-      VITE_API_URL="http://'<your-backend-url>'/api/"
-      VITE_BASE_URL="http://'<your-backend-url>'/"
+      VITE_API_URL="http://<your-backend-url>/api/"
+      VITE_BASE_URL="http://<your-backend-url>/"
 
 4. Open http://localhost:5173 in your browser to view the application.
  
@@ -56,5 +56,6 @@ If you'd like to contribute to this project, please follow these steps:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Happy coding! 🚀
-Asad Mansuri
+# Happy coding! 🚀
+
+# Asad Mansuri
