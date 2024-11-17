@@ -139,7 +139,7 @@
               v-for="(link, i) of surveyStoreObj.paginateLinks.links"
               :key="i"
               :disabled="!link.url"
-              href="#"
+              href="javascript:void(0)"
               @click="getForPage($event, link)"
               aria-current="page"
               class="relative inline-flex items-center px-4 py-2 border text-sm font-medium whitespace-nowrap"
@@ -204,7 +204,18 @@
           }
         }
       } catch ( error:any ) {
-        toast.error(error);
+        if (error && error.response && 422 === error.response.status) {
+            const formKeys = Object.keys(formData);
+            const errors   = error.response.data.errors;
+            handleServerValidationErrors(formKeys, errors);
+            return false;
+        } else if ( error && error.response && 401 === error.response.status ) {
+            toast.error(error.response.data.error);
+            return false;
+        } else {
+            const errorMessage = error.response?.data.message ?? "An unexpected error occurred. Please try again.";
+            toast.error(errorMessage);
+        }  
       }
     }
 </script>

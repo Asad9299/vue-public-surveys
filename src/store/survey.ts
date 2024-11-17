@@ -26,8 +26,8 @@ export type Question = {
 }
 
 export type Answer = {
-    id: any
-    answer?: any
+    id: number,
+    answer?: string | boolean | []
 }
 
 export type QuestionData = {
