@@ -29,3 +29,8 @@ Ensure you have the following installed:
    ```bash
    git clone https://github.com/your-username/frontend-repo-name.git
    cd frontend-repo-name
+2. Install dependencies:
+
+    ```bash
+    npm install
+    ```
